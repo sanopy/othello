@@ -1,0 +1,23 @@
+.cell {
+  width: 75px;
+  height: 75px;
+  background-color: #00FF00;
+}
+
+.black {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  background-color: black;
+}
+
+.white {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  background-color: white;
+}
+
+.placeable {
+  background-color: red;
+}
