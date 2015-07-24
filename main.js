@@ -158,6 +158,8 @@ function minimax(COLOR) {
     for(var i = 0;i < N; i++){
       for(var j = 0;j < N; j++){
         if(board[i][j] === color) cnt++;
+        if(i === 0 || j === 0 || i === N-1 || j === N-1) cnt += 20;
+        if(i === 1 && j === 1 || i === 1 && j === N-1 || i === N-1 && j === 1 || i === N-1 && j === 1) cnt -= 20;
       }
     }
 
