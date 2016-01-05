@@ -157,9 +157,16 @@ function minimax(COLOR) {
 
     for(var i = 0;i < N; i++){
       for(var j = 0;j < N; j++){
-        if(board[i][j] === color) cnt++;
-        if(i === 0 || j === 0 || i === N-1 || j === N-1) cnt += 20;
-        if(i === 1 && j === 1 || i === 1 && j === N-1 || i === N-1 && j === 1 || i === N-1 && j === 1) cnt -= 20;
+        var c = (color === 'x'? 'o' : 'x');
+        if(board[i][j] === color) {
+          cnt++;
+          if(i === 0 && j === 0 || i === 0 && j === N-1 || i === N-1 && j === 0 || i === N-1 && j === N-1) cnt += 20;
+          // if(i === 1 && j === 1 || i === 1 && j === N-2 || i === N-2 && j === 1 || i === N-2 && j === N-2) cnt -= 20;
+        } else if(board[i][j] === c) {
+          // cnt--;
+          // if(i === 0 && j === 0 || i === 0 && j === N-1 || i === N-1 && j === 0 || i === N-1 && j === N-1) cnt -= 20;
+          // if(i === 1 && j === 1 || i === 1 && j === N-2 || i === N-2 && j === 1 || i === N-2 && j === N-2) cnt += 20;
+        }
       }
     }
 
@@ -167,13 +174,13 @@ function minimax(COLOR) {
   }
 
   function rec(color, depth) {
-    if(depth > 5) return count(color);
+    if(depth > 4) return count(turn? 'x' : 'o');
 
     var arr = [];
     for(var i = 0;i < N; i++){
       for(var j = 0;j < N; j++){
         for(var k = 0;k < 8; k++){
-          var target = color === 'x'? 'o' : 'x';
+          var target = (color === 'x'? 'o' : 'x');
           if(i + dy[k] < 0 || i + dy[k] >= N || j + dx[k] < 0 || j + dx[k] >= N) continue;
           if(board[i][j] === ' ' && board[i + dy[k]][j + dx[k]] === target && placeable(j + dx[k], i + dy[k], color, k))
             arr.push(i * N + j);
@@ -183,11 +190,11 @@ function minimax(COLOR) {
 
     if(arr.length === 0) return rec(color === 'x'? 'o' : 'x', depth + 1);
 
-    var ret = depth % 2? -Infinity  : Infinity;
+    var ret = (depth % 2? -Infinity : Infinity);
     for(i = 0;i < arr.length; i++){
       var idx = arr[i];
       var x = idx % N, y = Math.floor(idx / N);
-      var tmp = board;
+      var tmp = $.extend(true, [[]], board);
       for(var j = 0;j < 8; j++)
         rev(x + dx[j], y + dy[j], color, j);
       var res = rec(color === 'x'? 'o' : 'x', depth + 1);
@@ -199,7 +206,7 @@ function minimax(COLOR) {
       } else {
         ret = Math.min(ret, res);
       }
-      board = tmp;
+      board = tmp.concat();
     }
     return ret;
   }
@@ -225,12 +232,12 @@ $('.cell').click(function() {
 
     var flag = false;
     while(!turn){
-    if(flag) alert('パスします');
-     if($('#minimax').is(':checked')) minimax(turn? 'x' : 'o');
-     else randomAI(turn);
-     whichTurn();
-     flag = true;
-   }
+      if(flag) alert('パスします');
+      if($('#minimax').is(':checked')) minimax(turn? 'x' : 'o');
+      else randomAI(turn);
+      whichTurn();
+      flag = true;
+    }
     // if(!turn){
     //   var loop = setInterval(function() {
     //     minimax(turn? 'x' : 'o');
