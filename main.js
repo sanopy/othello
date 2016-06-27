@@ -152,29 +152,33 @@ function minimax(COLOR) {
     return ret;
   }
 
-  function count(color) {
-    var cnt = 0;
+  function evaluate(color, put) {
+    var evaluateTable = [
+      [ 30, -12,  0, -1, -1,  0, -12,  30],
+      [-12, -15, -3, -3, -3, -3, -15, -12],
+      [  0,  -3,  0, -1, -1,  0,  -3,   0],
+      [ -1,  -3, -1, -1, -1, -1,  -3,  -1],
+      [ -1,  -3, -1, -1, -1, -1,  -3,  -1],
+      [  0,  -3,  0, -1, -1,  0,  -3,   0],
+      [-12, -15, -3, -3, -3, -3, -15, -12],
+      [ 30, -12,  0, -1, -1,  0, -12,  30]
+    ];
+    var value = 0;
 
-    for(var i = 0;i < N; i++){
-      for(var j = 0;j < N; j++){
-        var c = (color === 'x'? 'o' : 'x');
-        if(board[i][j] === color) {
-          cnt++;
-          if(i === 0 && j === 0 || i === 0 && j === N-1 || i === N-1 && j === 0 || i === N-1 && j === N-1) cnt += 20;
-          // if(i === 1 && j === 1 || i === 1 && j === N-2 || i === N-2 && j === 1 || i === N-2 && j === N-2) cnt -= 20;
-        } else if(board[i][j] === c) {
-          // cnt--;
-          // if(i === 0 && j === 0 || i === 0 && j === N-1 || i === N-1 && j === 0 || i === N-1 && j === N-1) cnt -= 20;
-          // if(i === 1 && j === 1 || i === 1 && j === N-2 || i === N-2 && j === 1 || i === N-2 && j === N-2) cnt += 20;
-        }
+    for(var i = 0;i < put.length; i++) {
+      // console.log(put[i]);
+      var x = put[i][0], y = put[i][1], col = put[i][2];
+      if(x !== null && y !== null) {
+        value += col === color? evaluateTable[y][x] : -evaluateTable[y][x];
       }
     }
 
-    return cnt;
+    return value;
   }
 
-  function rec(color, depth) {
-    if(depth > 4) return count(turn? 'x' : 'o');
+  function rec(color, put) {
+    // 2以上にするとバグる
+    if(put.length > 1) return evaluate(turn? 'x' : 'o', put);
 
     var arr = [];
     for(var i = 0;i < N; i++){
@@ -188,18 +192,25 @@ function minimax(COLOR) {
       }
     }
 
-    if(arr.length === 0) return rec(color === 'x'? 'o' : 'x', depth + 1);
+    if(arr.length === 0){
+      put.push([null, null, color]);
+      return rec(color === 'x'? 'o' : 'x', put);
+    }
 
-    var ret = (depth % 2? -Infinity : Infinity);
-    for(i = 0;i < arr.length; i++){
+    var ret = put.length % 2? Infinity : -Infinity;
+    for(var i = 0;i < arr.length; i++){
       var idx = arr[i];
       var x = idx % N, y = Math.floor(idx / N);
       var tmp = $.extend(true, [[]], board);
       for(var j = 0;j < 8; j++)
         rev(x + dx[j], y + dy[j], color, j);
-      var res = rec(color === 'x'? 'o' : 'x', depth + 1);
-      if(depth % 2){
-        if(depth === 1 && res > ret){
+      put.push([x, y, color]);
+      var res = rec(color === 'x'? 'o' : 'x', put);
+      // console.log(put, put.length);
+      put.pop();
+      console.log(put, put.length);
+      if(put.length % 2 === 0){
+        if(put.length === 0 && res > ret){
           px = x; py = y;
         }
         ret = Math.max(ret, res);
@@ -211,7 +222,7 @@ function minimax(COLOR) {
     return ret;
   }
 
-  rec(COLOR, 1);
+  rec(COLOR, []);
   var pos = py * N + px;
   $('#cell' + pos).html('<div class="' + (COLOR === 'x'? 'black' : 'white') + '"></div>');
   for(i = 0;i < 8; i++)
