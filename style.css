@@ -1,23 +1,28 @@
 .cell {
   width: 65px;
   height: 65px;
-  background-color: #00FF00;
+  /*background-color: #00FF00;*/
+  background-image: url("./img/green.png");
 }
 
 .black {
   width: 65px;
   height: 65px;
-  border-radius: 50%;
-  background-color: black;
+  /*border-radius: 50%;*/
+  /*background-color: black;*/
+  background-image: url("./img/black.png");
 }
 
 .white {
   width: 65px;
   height: 65px;
-  border-radius: 50%;
-  background-color: white;
+  /*border-radius: 50%;*/
+  /*background-color: white;*/
+  background-image: url("./img/white.png");
 }
 
 .placeable {
-  background-color: red;
+  width: 65px;
+  height: 65px;
+  /*background-color: red;*/
 }
