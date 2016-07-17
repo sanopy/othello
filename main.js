@@ -14,7 +14,7 @@ function init() {
     }
     html += '</tr>';
   }
-  $('table').html(html);
+  $('table #board').html(html);
 
   // 初期配置
   idx = (N / 2 - 1) * N + (N / 2);
