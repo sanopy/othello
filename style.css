@@ -1,3 +1,7 @@
+#board {
+  width: 520px;
+}
+
 .cell {
   width: 65px;
   height: 65px;
